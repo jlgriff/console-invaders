@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::{io, thread};
 use std::sync::mpsc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use crossterm::{event, ExecutableCommand, terminal};
 use crossterm::cursor::{Hide, Show};
 use crossterm::event::{Event, KeyCode};
@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     audio.add(AUDIO_EXPLODE, AUDIO_DIRECTORY.to_owned() + AUDIO_EXPLODE + AUDIO_FILE_EXTENSION);
     audio.add(AUDIO_LOSE, AUDIO_DIRECTORY.to_owned() + AUDIO_LOSE + AUDIO_FILE_EXTENSION);
     audio.add(AUDIO_MOVE, AUDIO_DIRECTORY.to_owned() + AUDIO_MOVE + AUDIO_FILE_EXTENSION);
-    audio.add(AUDIO_PEW, AUDIO_DIRECTORY.to_owned() + AUDIO_EXPLODE + AUDIO_FILE_EXTENSION);
+    audio.add(AUDIO_PEW, AUDIO_DIRECTORY.to_owned() + AUDIO_PEW + AUDIO_FILE_EXTENSION);
     audio.add(AUDIO_STARTUP, AUDIO_DIRECTORY.to_owned() + AUDIO_STARTUP + AUDIO_FILE_EXTENSION);
     audio.add(AUDIO_WIN, AUDIO_DIRECTORY.to_owned() + AUDIO_WIN + AUDIO_FILE_EXTENSION);
     audio.play(AUDIO_STARTUP);
@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let (render_tx, render_rx) = mpsc::channel();
     let render_handle = thread::spawn(move || {
         // force render entire frame once
-        let mut last_frame = frame::new_frame();
+        let mut last_frame = new_frame();
         let mut stdout = io::stdout();
         render::render(&mut stdout, &last_frame, &last_frame, true);
 
@@ -49,8 +49,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // game loop
     let mut player = Player::new();
-    'gameloop: loop {
+    let mut instant = Instant::now();
+    'game_loop: loop {
         // per-frame initialization
+        let delta = instant.elapsed();
+        instant = Instant::now();
         let mut current_frame = new_frame();
 
         // input
@@ -59,14 +62,22 @@ fn main() -> Result<(), Box<dyn Error>> {
                 match key_event.code {
                     KeyCode::Esc | KeyCode::Char('q') => {
                         audio.play(AUDIO_LOSE);
-                        break 'gameloop;
+                        break 'game_loop;
                     }
                     KeyCode::Left => player.move_left(),
                     KeyCode::Right => player.move_right(),
+                    KeyCode::Char(' ') | KeyCode::Enter => {
+                        if player.shoot() {
+                            audio.play(AUDIO_PEW);
+                        }
+                    }
                     _ => {}
                 }
             }
         }
+
+        // updates
+        player.update(delta);
 
         // draw and render
         player.draw(&mut current_frame);
