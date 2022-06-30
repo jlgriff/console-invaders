@@ -75,6 +75,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     // clean up
+    drop(render_tx);
     render_handle.join().unwrap();
     audio.wait();
     stdout.execute(Show)?; // show cursor
