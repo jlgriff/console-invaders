@@ -48,7 +48,7 @@ impl Player {
             if !laser.exploding {
                 if invaders.kill_invader_at(laser.x, laser.y) {
                     hit_something = true;
-                    laser.exploding;
+                    laser.explode();
                 }
             }
         }
