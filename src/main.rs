@@ -8,7 +8,8 @@ use crossterm::event::{Event, KeyCode};
 use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use rusty_audio::Audio;
 use console_invaders::{AUDIO_DIRECTORY, AUDIO_EXPLODE, AUDIO_FILE_EXTENSION, AUDIO_LOSE, AUDIO_MOVE, AUDIO_PEW, AUDIO_STARTUP, AUDIO_WIN, frame, render};
-use console_invaders::frame::new_frame;
+use console_invaders::frame::{Drawable, new_frame};
+use console_invaders::player::Player;
 
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -47,10 +48,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // game loop
+    let mut player = Player::new();
     'gameloop: loop {
         // per-frame initialization
-        let current_frame = new_frame();
-
+        let mut current_frame = new_frame();
 
         // input
         while event::poll(Duration::default())? {
@@ -60,12 +61,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                         audio.play(AUDIO_LOSE);
                         break 'gameloop;
                     }
+                    KeyCode::Left => player.move_left(),
+                    KeyCode::Right => player.move_right(),
                     _ => {}
                 }
             }
         }
 
         // draw and render
+        player.draw(&mut current_frame);
         let _ = render_tx.send(current_frame); // ignore the error because game loop won't be fully set up initially
         thread::sleep(Duration::from_millis(1));
     }

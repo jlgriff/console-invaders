@@ -1,5 +1,6 @@
 pub mod frame;
 pub mod render;
+pub mod player;
 
 // audio constants
 pub const AUDIO_DIRECTORY: &str = "./src/resources/sounds/";
