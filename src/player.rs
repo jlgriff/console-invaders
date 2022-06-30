@@ -1,6 +1,7 @@
 use std::time::Duration;
 use crate::{NUM_COLS, NUM_ROWS, NUM_SHOTS};
 use crate::frame::{Drawable, Frame};
+use crate::invaders::Invaders;
 use crate::laser::Laser;
 
 pub struct Player {
@@ -40,6 +41,18 @@ impl Player {
             laser.update(delta);
         }
         self.lasers.retain(|laser| !laser.dead());
+    }
+    pub fn detect_hits(&mut self, invaders: &mut Invaders) -> bool {
+        let mut hit_something = false;
+        for laser in self.lasers.iter_mut() {
+            if !laser.exploding {
+                if invaders.kill_invader_at(laser.x, laser.y) {
+                    hit_something = true;
+                    laser.exploding;
+                }
+            }
+        }
+        hit_something
     }
 }
 
