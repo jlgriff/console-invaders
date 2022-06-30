@@ -9,6 +9,7 @@ use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use rusty_audio::Audio;
 use console_invaders::{AUDIO_DIRECTORY, AUDIO_EXPLODE, AUDIO_FILE_EXTENSION, AUDIO_LOSE, AUDIO_MOVE, AUDIO_PEW, AUDIO_STARTUP, AUDIO_WIN, frame, render};
 use console_invaders::frame::{Drawable, new_frame};
+use console_invaders::invaders::Invaders;
 use console_invaders::player::Player;
 
 
@@ -50,6 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // game loop
     let mut player = Player::new();
     let mut instant = Instant::now();
+    let mut invaders = Invaders::new();
     'game_loop: loop {
         // per-frame initialization
         let delta = instant.elapsed();
@@ -78,9 +80,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // updates
         player.update(delta);
+        if invaders.update(delta) {
+            audio.play(AUDIO_MOVE);
+        }
 
         // draw and render
         player.draw(&mut current_frame);
+        invaders.draw(&mut current_frame);
         let _ = render_tx.send(current_frame); // ignore the error because game loop won't be fully set up initially
         thread::sleep(Duration::from_millis(1));
     }
