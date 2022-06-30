@@ -92,6 +92,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         invaders.draw(&mut current_frame);
         let _ = render_tx.send(current_frame); // ignore the error because game loop won't be fully set up initially
         thread::sleep(Duration::from_millis(1));
+
+        // win or lose conditions
+        if invaders.all_killed() {
+            audio.play(AUDIO_WIN);
+            break 'game_loop;
+        }
+        if invaders.reached_bottom() {
+            audio.play(AUDIO_LOSE);
+            break 'game_loop;
+        }
     }
 
     // clean up
