@@ -22,3 +22,7 @@ The game is built with Rust. 🦀
 | Move left and right | `←` and `→` |
 | Fire laser          | `space`     |
 | Quit                | `esc` or `q` |
+
+# Credit
+
+Created with the guidance of Nathan Stocks' [Rust course](https://www.udemy.com/course/ultimate-rust-crash-course).
