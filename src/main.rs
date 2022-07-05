@@ -7,7 +7,7 @@ use crossterm::cursor::{Hide, Show};
 use crossterm::event::{Event, KeyCode};
 use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use rusty_audio::Audio;
-use console_invaders::{AUDIO_DIRECTORY, AUDIO_EXPLODE, AUDIO_FILE_EXTENSION, AUDIO_LOSE, AUDIO_MOVE, AUDIO_PEW, AUDIO_STARTUP, AUDIO_WIN, frame, render};
+use console_invaders::{AUDIO_DIRECTORY, AUDIO_EXPLODE, AUDIO_FILE_EXTENSION, AUDIO_LOSE, AUDIO_MOVE, AUDIO_PEW, AUDIO_STARTUP, AUDIO_WIN, render};
 use console_invaders::frame::{Drawable, new_frame};
 use console_invaders::invaders::Invaders;
 use console_invaders::player::Player;
