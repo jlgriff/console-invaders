@@ -3,7 +3,7 @@
 This is a simple version of Space Invaders to play in the terminal. The goal is to obliterate all the alien invaders
 before they reach Earth.
 
-The game is built with Rust using the Rusty Engine.
+The game is built with Rust. 🦀
 
 # Installation
 
