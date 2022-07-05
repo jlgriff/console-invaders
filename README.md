@@ -15,6 +15,8 @@ The game is built with Rust. 🦀
 1. Navigate to the project directory.
 2. Run `cargo run` to begin playing.
 
+![console-invaders Demo](https://user-images.githubusercontent.com/53009037/177262736-641da33e-7dcf-46d6-b20c-767c7dc9e356.gif)
+
 # Controls
 
 | Action              | Key Binding |
